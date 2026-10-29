@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Industrial Energy Intelligence
 
 An end-to-end industrial software system that correlates machine telemetry (15-minute kW/kWh readings), production output (discrete batches, yields, scrap), Time-of-Use (TOU) utility tariffs, and meteorological observations to detect energy waste, shave peak demand surcharges, and generate prioritized, measurable recommendations.
@@ -209,3 +210,7 @@ py -3.12 -m unittest discover -s tests -v
 ## 10. Lawful Provenance & Public Data Statement
 
 This system uses 100% synthetic data generated deterministically using standard thermodynamic, electrical, and industrial scheduling formulations. No proprietary, confidential, or private personal data was accessed or harvested. Electrical tariff structures are modeled on public Time-Of-Use industrial rate tariffs (such as Commonwealth Edison Rate BES and California PG&E E-19/E-20 schedules).
+=======
+# Smart-Industrial-Energy-Monitoring
+Industrial energy monitoring system for detecting energy waste, analyzing peak demand, optimizing electricity costs, and improving energy efficiency.
+>>>>>>> 8497ea96c81072bca6c6ed3f5ecbbfb245bf029b
