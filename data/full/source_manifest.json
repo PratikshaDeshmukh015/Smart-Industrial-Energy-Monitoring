@@ -1,0 +1,50 @@
+{
+  "title": "Industrial Energy Intelligence Master Dataset",
+  "schema_version": "1.0.0",
+  "generator": "IndustrialDataGenerator",
+  "scale": "full",
+  "seed": 20261022,
+  "generator_command": "py -3.12 cli.py generate --scale full --seed 20261022 --output-dir data/full",
+  "generated_at": "2026-10-28T17:09:48.955606",
+  "simulation_start": "2026-06-01T00:00:00",
+  "simulation_days": 90,
+  "cadence_minutes": 15,
+  "provenance": {
+    "source_type": "Deterministic Synthetic Physics Simulation",
+    "lawful_use_statement": "100% synthetic mathematical and thermodynamic models. No private, confidential, or proprietary user data accessed.",
+    "tariff_model_reference": "Public industrial TOU rate design based on ComEd Rate BES & PG&E E-19/E-20 schedules."
+  },
+  "row_counts": {
+    "Plant": 1,
+    "Meter": 20,
+    "Machine": 16,
+    "MeterMachineMapping": 17,
+    "Shift": 3,
+    "Tariff": 2,
+    "WeatherObservation": 2160,
+    "ProductionBatch": 2000,
+    "BatchMachineExecution": 3996,
+    "EnergyReading": 172800,
+    "MaintenanceEvent": 12,
+    "StateChangeEvent": 340,
+    "GroundTruth": 8
+  },
+  "checksums_sha256": {
+    "Plant.csv": "ee83c22bad67c618629e13caaa768441f35d3f8c8e440e8fcb0a02c267b16e88",
+    "Meter.csv": "6dd0d315bbdf23c3864915a859fbf21338d340eae0d0fa47db474852ce07711c",
+    "Machine.csv": "43f71cb9dc18d674917dca51f6a6a41b9c0ebd533f88f4fd370ea8bf99780beb",
+    "MeterMachineMapping.csv": "b981268cce810bfc3da1a464a1fb1245f700d356ffb00c774845617d725cf68a",
+    "Shift.csv": "a7e92bd7e98aa0ec0c7baf0c7f7e5d239783096d0518feddd3e639dae27457bb",
+    "Tariff.csv": "6c95767a756a3545cb9a6d15c0a6e50e11c4c9752403e29642adf32db1d68e9a",
+    "WeatherObservation.csv": "59a1f4c4658eacfeb787fbcb83fd28fc30379e428df6640ec6831e14a3ed3fad",
+    "ProductionBatch.csv": "c262c976a1d9f62c49db6dcf57b9957300d027b0c7b8920a5a2a411742cc1288",
+    "BatchMachineExecution.csv": "24270bd1f3ece72b5f352aeefb4a3dbe9a510d56f98c2e656485bd5fd1afbc12",
+    "EnergyReading.csv": "d13200617752df9f879c68876a0a1372bd765965c3fe821b36284b51f4c1a99e",
+    "MaintenanceEvent.csv": "f83326ea0dbd2282832d6432b7691584ed3a5bf05c2602f852140766790c76eb",
+    "StateChangeEvent.csv": "988114474900073ec2980af24c2a815e85446efc2f47fc39e837bea0c257770d",
+    "GroundTruth.csv": "e84d4f894fba01149ed3c9beb44b9d745710d3ccaa0a571aa0a9a4f7ee104aef",
+    "ground_truth.json": "adf6913485b72a27c850081c47b1d365499dab63ef0c0174d79f88d9167e707e",
+    "schema.sql": "07466ee5c50b8e9567a5c579017322f3714886871e2d023f555efb816b618cad",
+    "seed_data.sql": "3cf187b6a744dd567aacf8ff3ec62c8e9968c283162af52a59180a103ab040f9"
+  }
+}

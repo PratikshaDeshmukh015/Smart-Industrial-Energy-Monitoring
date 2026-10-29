@@ -1,0 +1,5 @@
+meter_id,plant_id,meter_name,meter_type,meter_level,parent_meter_id,sampling_cadence_min,ct_ratio,status,installed_date
+MTR-PLT-001-001,PLT-001,Main Grid Incomer,MAIN_INCOMER,1,,15,100.0,ACTIVE,2024-01-15
+MTR-PLT-001-002,PLT-001,Heavy Machining Sub-Feeder,SUB_FEEDER,2,MTR-PLT-001-001,15,40.0,ACTIVE,2024-02-01
+MTR-PLT-001-003,PLT-001,Machine Disconnect Meter 1,MACHINE_LEVEL,3,MTR-PLT-001-002,15,10.0,ACTIVE,2024-03-01
+MTR-PLT-001-004,PLT-001,Machine Disconnect Meter 2,MACHINE_LEVEL,3,MTR-PLT-001-002,15,10.0,ACTIVE,2024-03-01

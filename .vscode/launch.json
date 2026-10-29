@@ -1,0 +1,45 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "CLI: Correlate Energy Data",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/cli.py",
+            "args": ["correlate", "--data-dir", "data/full"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "CLI: Run Validation Suite",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/cli.py",
+            "args": ["validate", "--data-dir", "data/full", "--export-report", "docs/validation_report.md"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "CLI: Evaluate vs Ground Truth",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/cli.py",
+            "args": ["evaluate", "--data-dir", "data/full", "--export-report", "docs/evaluation_report.md"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "CLI: Generate Full Scale Data",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/cli.py",
+            "args": ["generate", "--scale", "full", "--output-dir", "data/full"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "CLI: Run Reproducibility Check",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/cli.py",
+            "args": ["reproduce", "--scale", "starter", "--seed", "20261022"],
+            "console": "integratedTerminal"
+        }
+    ]
+}

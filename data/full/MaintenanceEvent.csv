@@ -1,0 +1,13 @@
+event_id,machine_id,event_type,start_time,end_time,description,energy_impact_kwh
+MNT-2026-000001,MCH-012,PREVENTIVE,2026-06-18T01:00:00,2026-06-18T17:00:00,Scheduled motor lubrication and VFD parameter retuning,-18.5
+MNT-2026-000002,MCH-015,PREVENTIVE,2026-07-07T14:00:00,2026-07-07T18:00:00,Scheduled motor lubrication and VFD parameter retuning,-18.5
+MNT-2026-000003,MCH-005,UNPLANNED,2026-06-15T07:00:00,2026-06-15T15:00:00,Emergency repair of seized bearing assembly,-8.0
+MNT-2026-000004,MCH-009,PREVENTIVE,2026-06-15T04:00:00,2026-06-15T20:00:00,Scheduled motor lubrication and VFD parameter retuning,-18.5
+MNT-2026-000005,MCH-003,UNPLANNED,2026-06-08T11:00:00,2026-06-08T19:00:00,Emergency repair of seized bearing assembly,-8.0
+MNT-2026-000006,MCH-001,PREVENTIVE,2026-08-16T08:00:00,2026-08-16T10:00:00,Scheduled motor lubrication and VFD parameter retuning,-18.5
+MNT-2026-000007,MCH-012,UNPLANNED,2026-08-27T10:00:00,2026-08-27T18:00:00,Emergency repair of seized bearing assembly,-8.0
+MNT-2026-000008,MCH-007,OVERHAUL,2026-06-28T06:00:00,2026-06-28T22:00:00,Compressor valve replacement and compressed air leak remediation,-45.0
+MNT-2026-000009,MCH-010,PREVENTIVE,2026-07-29T20:00:00,2026-07-30T04:00:00,Scheduled motor lubrication and VFD parameter retuning,-18.5
+MNT-2026-000010,MCH-013,OVERHAUL,2026-07-26T18:00:00,2026-07-26T20:00:00,Compressor valve replacement and compressed air leak remediation,-45.0
+MNT-2026-000011,MCH-008,UNPLANNED,2026-06-29T16:00:00,2026-06-29T20:00:00,Emergency repair of seized bearing assembly,-8.0
+MNT-2026-000012,MCH-014,PREVENTIVE,2026-07-26T03:00:00,2026-07-26T07:00:00,Scheduled motor lubrication and VFD parameter retuning,-18.5

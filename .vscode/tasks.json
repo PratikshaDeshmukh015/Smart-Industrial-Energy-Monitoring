@@ -1,0 +1,85 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "1. Run All Unit Tests",
+            "type": "shell",
+            "command": "py -3.12 -m unittest discover -s tests -v",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "2. Generate Starter Data (Fast)",
+            "type": "shell",
+            "command": "py -3.12 cli.py generate --scale starter --output-dir data/starter",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "3. Generate Full Data (20 Meters, 90 Days, 2000 Batches)",
+            "type": "shell",
+            "command": "py -3.12 cli.py generate --scale full --output-dir data/full",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "4. Validate Data Integrity",
+            "type": "shell",
+            "command": "py -3.12 cli.py validate --data-dir data/full --export-report docs/validation_report.md",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "5. Run Energy Waste & Peak Demand Correlation",
+            "type": "shell",
+            "command": "py -3.12 cli.py correlate --data-dir data/full",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "6. Benchmark vs Ground Truth",
+            "type": "shell",
+            "command": "py -3.12 cli.py evaluate --data-dir data/full --export-report docs/evaluation_report.md",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "7. Generate Operations Dashboard",
+            "type": "shell",
+            "command": "py -3.12 cli.py dashboard --data-dir data/full --output dashboard.html",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "8. Test 100% Deterministic Reproducibility",
+            "type": "shell",
+            "command": "py -3.12 cli.py reproduce --scale starter --seed 20261022",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            }
+        }
+    ]
+}

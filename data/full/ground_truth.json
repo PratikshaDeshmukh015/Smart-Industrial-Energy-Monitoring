@@ -1,0 +1,90 @@
+[
+  {
+    "anomaly_id": "ANOM-0001",
+    "issue_type": "METER_TOTAL_DISAGREES_WITH_INTERVAL_SUM",
+    "entity_type": "EnergyReading",
+    "record_id": "ENG-MTR-PLT-001-001-202606231200",
+    "timestamp": "2026-06-23T12:00:00",
+    "meter_id": "MTR-PLT-001-001",
+    "description": "Main incomer active power dropped from 2053.92 kW to 821.57 kW, causing severe negative reconciliation against sub-meters.",
+    "severity": "HIGH",
+    "expected_action": "Flag meter calibration fault or CT ratio telemetry failure."
+  },
+  {
+    "anomaly_id": "ANOM-0002",
+    "issue_type": "KW_CONFUSED_WITH_KWH",
+    "entity_type": "EnergyReading",
+    "record_id": "ENG-MTR-PLT-001-016-202606010030",
+    "timestamp": "2026-06-01T00:30:00",
+    "meter_id": "MTR-PLT-001-016",
+    "description": "Telemetry unit confusion: energy_kwh set to 82.39 instead of 20.5975 kWh (ratio 1.0 instead of 0.25).",
+    "severity": "CRITICAL",
+    "expected_action": "Recalculate energy_kwh using sampling interval cadence (15 min = 0.25 h)."
+  },
+  {
+    "anomaly_id": "ANOM-0003",
+    "issue_type": "TARIFF_TIMEZONE_MISMATCH",
+    "entity_type": "Tariff",
+    "record_id": "TAR-2026-002",
+    "timestamp": "2026-06-01",
+    "meter_id": "ALL",
+    "description": "Tariff peak window is shifted by UTC offset (+5 hours mismatch from plant local operating window).",
+    "severity": "HIGH",
+    "expected_action": "Align tariff time window timezone with Plant.timezone America/Chicago."
+  },
+  {
+    "anomaly_id": "ANOM-0004",
+    "issue_type": "READING_DUPLICATES",
+    "entity_type": "EnergyReading",
+    "record_id": "ENG-MTR-PLT-001-006-202606010100-DUP",
+    "timestamp": "2026-06-01T01:00:00",
+    "meter_id": "MTR-PLT-001-006",
+    "description": "Duplicate interval reading encountered for meter MTR-PLT-001-006 at 2026-06-01T01:00:00.",
+    "severity": "MEDIUM",
+    "expected_action": "Deduplicate interval readings by (meter_id, timestamp) composite key."
+  },
+  {
+    "anomaly_id": "ANOM-0005",
+    "issue_type": "ENERGY_ASSIGNED_OUTSIDE_HIERARCHY",
+    "entity_type": "MeterMachineMapping",
+    "record_id": "MAP-00017",
+    "timestamp": "2026-06-01T00:00:00",
+    "meter_id": "MTR-PLT-001-999",
+    "description": "Machine MCH-001 mapped to non-existent meter MTR-PLT-001-999 outside physical plant tree.",
+    "severity": "CRITICAL",
+    "expected_action": "Validate foreign key existence and tree hierarchy before energy allocation."
+  },
+  {
+    "anomaly_id": "ANOM-0006",
+    "issue_type": "HIGH_IDLE_CONSUMPTION",
+    "entity_type": "EnergyReading",
+    "record_id": "ENG-MTR-PLT-001-006-202606010445",
+    "timestamp": "2026-06-01T04:45:00",
+    "meter_id": "MTR-PLT-001-006",
+    "description": "Machine left energized at 95.0 kW during scheduled plant shutdown (baseline standby is 35 kW).",
+    "severity": "HIGH",
+    "expected_action": "Auto de-energize hydraulic power pack during non-production shifts."
+  },
+  {
+    "anomaly_id": "ANOM-0007",
+    "issue_type": "PEAK_DEMAND_SPIKE",
+    "entity_type": "EnergyReading",
+    "record_id": "ENG-MTR-PLT-001-001-202606010845",
+    "timestamp": "2026-06-01T08:45:00",
+    "meter_id": "MTR-PLT-001-001",
+    "description": "Main incomer demand peaked at 1435.0 kW, exceeding contracted limit of 1250.0 kW during TOU peak window.",
+    "severity": "CRITICAL",
+    "expected_action": "Stagger heavy stamping press startup sequence and shed auxiliary chiller loads."
+  },
+  {
+    "anomaly_id": "ANOM-0008",
+    "issue_type": "METER_TELEMETRY_GAP",
+    "entity_type": "EnergyReading",
+    "record_id": "ENG-MTR-PLT-001-002-202606010345",
+    "timestamp": "2026-06-01T03:45:00",
+    "meter_id": "MTR-PLT-001-002",
+    "description": "Telemetry gap: Meter MTR-PLT-001-002 dropped 15-minute interval reading at 2026-06-01T03:45:00 due to IoT gateway buffer timeout.",
+    "severity": "HIGH",
+    "expected_action": "Execute exception handling path: interpolate missing interval and trigger OT/IT communication alert."
+  }
+]

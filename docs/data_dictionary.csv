@@ -1,0 +1,113 @@
+Entity,Field,Type,Required,Uniqueness,Units,Allowed Values,Validation Rule
+Plant,plant_id,string,YES,PRIMARY_KEY,dimensionless,Regex ^PLT-[0-9]{3}$,"Non-null, globally unique plant identifier."
+Plant,name,string,YES,NON_UNIQUE,dimensionless,Free text (1-100 chars),Non-empty string.
+Plant,location,string,YES,NON_UNIQUE,dimensionless,"City, State/Country format",Non-empty geographic location.
+Plant,timezone,string,YES,NON_UNIQUE,dimensionless,"Valid IANA timezone e.g. America/Chicago, UTC",Valid standard timezone name.
+Plant,contracted_peak_kw,float,YES,NON_UNIQUE,kW,> 0.0,Must be positive numeric value representing utility sanctioned maximum demand threshold.
+Plant,voltage_kv,float,YES,NON_UNIQUE,kV,"[0.48, 4.16, 13.8, 33.0, 69.0]",Nominal utility incoming grid voltage class.
+Plant,created_at,string,YES,NON_UNIQUE,UTC timestamp,ISO 8601 timestamp,Valid ISO 8601 date string.
+Meter,meter_id,string,YES,PRIMARY_KEY,dimensionless,Regex ^MTR-PLT-[0-9]{3}-[0-9]{3}$,Pattern MTR-<plant-id>-<seq>; immutable.
+Meter,plant_id,string,YES,FOREIGN_KEY,dimensionless,Existing Plant.plant_id,Must reference a valid Plant record.
+Meter,meter_name,string,YES,NON_UNIQUE,dimensionless,"Descriptive name (e.g. Main Incomer, Feeder-A, Chiller Submeter)",Non-empty string.
+Meter,meter_type,string,YES,NON_UNIQUE,enum,"['MAIN_INCOMER', 'SUB_FEEDER', 'MACHINE_LEVEL']",Level 1 must be MAIN_INCOMER; Level 2 SUB_FEEDER; Level 3 MACHINE_LEVEL.
+Meter,meter_level,integer,YES,NON_UNIQUE,hierarchy depth,"[1, 2, 3]","1 for utility incomer, 2 for department feeder, 3 for asset level."
+Meter,parent_meter_id,string,NO,FOREIGN_KEY,dimensionless,"Null for Level 1, existing meter_id of level-1 for Level 2, level-2 for Level 3",Self-referential hierarchy. Must not form circular reference.
+Meter,sampling_cadence_min,integer,YES,NON_UNIQUE,minutes,"[5, 15, 30, 60]",Standard sampling interval. Baseline standard is 15 minutes.
+Meter,ct_ratio,float,YES,NON_UNIQUE,ratio,> 0.0,"Current transformer multiplier (e.g. 1.0, 40.0, 100.0)."
+Meter,status,string,YES,NON_UNIQUE,enum,"['ACTIVE', 'INACTIVE', 'MAINTENANCE']",Operational lifecycle state.
+Meter,installed_date,string,YES,NON_UNIQUE,date,ISO 8601 date (YYYY-MM-DD),Must precede any reading timestamps.
+Machine,machine_id,string,YES,PRIMARY_KEY,dimensionless,Regex ^MCH-[0-9]{3}$,Pattern MCH-<seq>; immutable.
+Machine,plant_id,string,YES,FOREIGN_KEY,dimensionless,Existing Plant.plant_id,Must reference parent Plant.
+Machine,name,string,YES,NON_UNIQUE,dimensionless,Free text asset tag name,Non-empty string.
+Machine,category,string,YES,NON_UNIQUE,enum,"['STAMPING', 'INJECTION_MOLD', 'CNC_MILLING', 'COMPRESSOR', 'CHILLER']",Valid machine category enum.
+Machine,rated_power_kw,float,YES,NON_UNIQUE,kW,> 0.0,Nameplate active power capacity.
+Machine,standby_power_kw,float,YES,NON_UNIQUE,kW,>= 0.0 and < rated_power_kw,Baseline power drawn when idle; strictly less than rated power.
+Machine,current_status,string,YES,NON_UNIQUE,enum,"['RUNNING', 'IDLE', 'MAINTENANCE', 'OFF']",Valid machine status enum.
+Machine,installed_date,string,YES,NON_UNIQUE,date,ISO 8601 date (YYYY-MM-DD),Must precede production and maintenance events.
+MeterMachineMapping,mapping_id,string,YES,PRIMARY_KEY,dimensionless,Regex ^MAP-[0-9]{5}$,Unique bridge record ID.
+MeterMachineMapping,meter_id,string,YES,FOREIGN_KEY,dimensionless,Existing Meter.meter_id,Must reference valid Meter.
+MeterMachineMapping,machine_id,string,YES,FOREIGN_KEY,dimensionless,Existing Machine.machine_id,Must reference valid Machine.
+MeterMachineMapping,allocation_ratio,float,YES,NON_UNIQUE,fraction,0.0 < ratio <= 1.0,Sum of allocation ratios for a meter across all machines in a timespan should be <= 1.0.
+MeterMachineMapping,effective_from,string,YES,NON_UNIQUE,timestamp,ISO 8601 timestamp,Start of electrical topology assignment.
+MeterMachineMapping,effective_to,string,NO,NON_UNIQUE,timestamp,Null or ISO 8601 timestamp >= effective_from,End date of topology mapping; null indicates currently active.
+Shift,shift_id,string,YES,PRIMARY_KEY,dimensionless,Regex ^SHF-[0-9]{4}-[0-9]{3}$,Unique shift record identifier.
+Shift,plant_id,string,YES,FOREIGN_KEY,dimensionless,Existing Plant.plant_id,Must reference parent Plant.
+Shift,shift_name,string,YES,NON_UNIQUE,enum,"['MORNING', 'AFTERNOON', 'NIGHT']",Standard three-shift operating model.
+Shift,start_time,string,YES,NON_UNIQUE,time,HH:MM format (24h),Shift commencement time.
+Shift,end_time,string,YES,NON_UNIQUE,time,HH:MM format (24h),Shift termination time (wraps next day if end < start).
+Shift,active_days,string,YES,NON_UNIQUE,dimensionless,"Comma-separated days e.g. 'MON,TUE,WED,THU,FRI'",Designates production operating days.
+Tariff,tariff_id,string,YES,PRIMARY_KEY,dimensionless,Regex ^TAR-[0-9]{4}-[0-9]{3}$,Pattern TAR-<year>-<seq>; immutable.
+Tariff,plant_id,string,YES,FOREIGN_KEY,dimensionless,Existing Plant.plant_id,Must reference valid Plant.
+Tariff,tariff_name,string,YES,NON_UNIQUE,dimensionless,Free text tariff rate code (e.g. TOU-Large-Industrial-G2),Non-empty string.
+Tariff,effective_from,string,YES,NON_UNIQUE,date,ISO 8601 date (YYYY-MM-DD),Tariff schedule start date.
+Tariff,effective_to,string,YES,NON_UNIQUE,date,ISO 8601 date >= effective_from,Tariff schedule expiry date.
+Tariff,rate_type,string,YES,NON_UNIQUE,enum,"['TOU', 'FLAT']",Pricing structure.
+Tariff,peak_rate_kwh,float,YES,NON_UNIQUE,currency/kWh,> 0.0 and > mid_peak_rate_kwh,Energy rate during high-demand peak hours.
+Tariff,mid_peak_rate_kwh,float,YES,NON_UNIQUE,currency/kWh,> 0.0 and > off_peak_rate_kwh,Energy rate during partial peak hours.
+Tariff,off_peak_rate_kwh,float,YES,NON_UNIQUE,currency/kWh,> 0.0,Energy rate during baseline/night hours.
+Tariff,peak_demand_charge_kw,float,YES,NON_UNIQUE,currency/kW/month,>= 0.0,Capacity surcharge billed on the monthly peak 15-min kW demand.
+Tariff,peak_window_start,string,YES,NON_UNIQUE,time,HH:MM (e.g. '14:00'),Start of peak billing interval.
+Tariff,peak_window_end,string,YES,NON_UNIQUE,time,HH:MM (e.g. '18:00'),End of peak billing interval.
+Tariff,mid_peak_window_start,string,YES,NON_UNIQUE,time,HH:MM (e.g. '08:00'),Start of mid-peak billing interval.
+Tariff,mid_peak_window_end,string,YES,NON_UNIQUE,time,HH:MM (e.g. '14:00'),End of mid-peak billing interval.
+Tariff,currency,string,YES,NON_UNIQUE,ISO 4217 code,"['USD', 'EUR', 'INR', 'GBP']",Currency code.
+WeatherObservation,weather_id,string,YES,PRIMARY_KEY,dimensionless,Regex ^WTH-PLT-[0-9]{3}-[0-9]{12}$,Pattern WTH-<plant-id>-<timestamp>; unique.
+WeatherObservation,plant_id,string,YES,FOREIGN_KEY,dimensionless,Existing Plant.plant_id,Must reference valid Plant.
+WeatherObservation,timestamp,string,YES,NON_UNIQUE,timestamp,ISO 8601 timestamp,Observation timestamp.
+WeatherObservation,ambient_temp_c,float,YES,NON_UNIQUE,°C,-30.0 <= temp <= 55.0,Physical ambient dry-bulb temperature.
+WeatherObservation,relative_humidity_pct,float,YES,NON_UNIQUE,%,0.0 <= humidity <= 100.0,Relative humidity percentage.
+WeatherObservation,dew_point_c,float,YES,NON_UNIQUE,°C,<= ambient_temp_c,Dew point temperature cannot exceed dry bulb temperature.
+WeatherObservation,cooling_degree_hours,float,YES,NON_UNIQUE,degree-hours,>= 0.0,"Max(0.0, ambient_temp_c - 18.3)."
+ProductionBatch,batch_id,string,YES,PRIMARY_KEY,dimensionless,Regex ^BATCH-[0-9]{4}-[0-9]{6}$,Pattern BATCH-<year>-<seq>; immutable.
+ProductionBatch,plant_id,string,YES,FOREIGN_KEY,dimensionless,Existing Plant.plant_id,Must reference parent Plant.
+ProductionBatch,product_sku,string,YES,NON_UNIQUE,dimensionless,"Regex ^SKU-[A-Z0-9]{4,8}$",Finished good catalog reference.
+ProductionBatch,planned_qty,integer,YES,NON_UNIQUE,pieces,> 0,Scheduled production batch size.
+ProductionBatch,produced_qty,integer,YES,NON_UNIQUE,pieces,>= 0,Total parts completed.
+ProductionBatch,scrap_qty,integer,YES,NON_UNIQUE,pieces,>= 0 and scrap_qty <= produced_qty,Defective parts rejected; cannot exceed total produced.
+ProductionBatch,start_time,string,YES,NON_UNIQUE,timestamp,ISO 8601 timestamp,Batch commencement.
+ProductionBatch,end_time,string,YES,NON_UNIQUE,timestamp,ISO 8601 timestamp >= start_time,Batch completion time; must follow start_time.
+ProductionBatch,shift_id,string,YES,FOREIGN_KEY,dimensionless,Existing Shift.shift_id,Assigned production shift.
+ProductionBatch,status,string,YES,NON_UNIQUE,enum,"['PLANNED', 'IN_PROGRESS', 'COMPLETED', 'ABORTED']",Batch lifecycle status.
+BatchMachineExecution,execution_id,string,YES,PRIMARY_KEY,dimensionless,Regex ^EXE-[0-9]{6}$,Unique execution event ID.
+BatchMachineExecution,batch_id,string,YES,FOREIGN_KEY,dimensionless,Existing ProductionBatch.batch_id,Must reference valid Batch.
+BatchMachineExecution,machine_id,string,YES,FOREIGN_KEY,dimensionless,Existing Machine.machine_id,Must reference valid Machine.
+BatchMachineExecution,runtime_min,float,YES,NON_UNIQUE,minutes,>= 0.0,Active machine manufacturing time.
+BatchMachineExecution,idle_min,float,YES,NON_UNIQUE,minutes,>= 0.0,Non-productive powered idle waiting time.
+BatchMachineExecution,output_qty,integer,YES,NON_UNIQUE,pieces,>= 0,Pieces processed by this specific asset.
+StateChangeEvent,event_id,string,YES,PRIMARY_KEY,dimensionless,Regex ^EVT-[0-9]{4}-[0-9]{6}$,Pattern EVT-<year>-<seq>; immutable unique identifier.
+StateChangeEvent,entity_type,string,YES,NON_UNIQUE,enum,"['Machine', 'ProductionBatch', 'Recommendation', 'Meter']",Target domain entity type undergoing lifecycle transition.
+StateChangeEvent,entity_id,string,YES,FOREIGN_KEY,dimensionless,Valid primary key of target entity,Must reference an existing entity record.
+StateChangeEvent,previous_state,string,NO,NON_UNIQUE,enum,Valid lifecycle state enum or None for creation,Pre-transition lifecycle state.
+StateChangeEvent,new_state,string,YES,NON_UNIQUE,enum,Valid lifecycle state enum,Post-transition lifecycle state following valid transition graph.
+StateChangeEvent,transition_timestamp,string,YES,NON_UNIQUE,timestamp,ISO 8601 timestamp,Exact chronological timestamp when transition occurred.
+StateChangeEvent,triggered_by,string,YES,NON_UNIQUE,enum,"['SCADA_SYSTEM', 'PLANT_OPERATOR', 'PRODUCTION_PLANNER', 'MAINTENANCE_ENGINEER', 'ENERGY_INTELLIGENCE_ENGINE']",Originator system or user actor initiating state transition.
+StateChangeEvent,reason,string,YES,NON_UNIQUE,dimensionless,Descriptive reason string,Auditable business rationale for lifecycle transition.
+EnergyReading,reading_id,string,YES,PRIMARY_KEY,dimensionless,Regex ^ENG-MTR-PLT-[0-9]{3}-[0-9]{3}-[0-9]{12}$,Pattern ENG-<meter-id>-<timestamp>; unique.
+EnergyReading,meter_id,string,YES,FOREIGN_KEY,dimensionless,Existing Meter.meter_id,Must reference existing Meter.
+EnergyReading,timestamp,string,YES,NON_UNIQUE,timestamp,"ISO 8601 timestamp at 15-min boundary (:00, :15, :30, :45)",Must align with sampling cadence.
+EnergyReading,active_power_kw,float,YES,NON_UNIQUE,kW,>= 0.0,Average active load demand over the 15-minute interval.
+EnergyReading,energy_kwh,float,YES,NON_UNIQUE,kWh,>= 0.0,Arithmetic reconciliation: energy_kwh == active_power_kw * (cadence_min / 60.0).
+EnergyReading,power_factor,float,YES,NON_UNIQUE,ratio,0.70 <= pf <= 1.0,Cosine of phase angle between voltage and current.
+EnergyReading,voltage_v,float,YES,NON_UNIQUE,V,> 0.0,Line-to-line or line-to-neutral RMS voltage.
+EnergyReading,current_a,float,YES,NON_UNIQUE,A,>= 0.0,Three-phase average RMS current.
+EnergyReading,data_source,string,YES,NON_UNIQUE,enum,"['SCADA', 'IOT_GATEWAY']",Data acquisition pipeline.
+MaintenanceEvent,event_id,string,YES,PRIMARY_KEY,dimensionless,Regex ^MNT-[0-9]{4}-[0-9]{6}$,Pattern MNT-<year>-<seq>; immutable.
+MaintenanceEvent,machine_id,string,YES,FOREIGN_KEY,dimensionless,Existing Machine.machine_id,Must reference existing Machine.
+MaintenanceEvent,event_type,string,YES,NON_UNIQUE,enum,"['PREVENTIVE', 'UNPLANNED', 'OVERHAUL']",Maintenance classification.
+MaintenanceEvent,start_time,string,YES,NON_UNIQUE,timestamp,ISO 8601 timestamp,Work commencement.
+MaintenanceEvent,end_time,string,YES,NON_UNIQUE,timestamp,ISO 8601 timestamp >= start_time,Work completion.
+MaintenanceEvent,description,string,YES,NON_UNIQUE,dimensionless,"Free text (e.g. Bearing replacement, VFD parameter re-tuning)",Detailed work log.
+MaintenanceEvent,energy_impact_kwh,float,YES,NON_UNIQUE,kWh/day,"Float value (negative denotes efficiency gain, positive denotes degradation)",Measurable shift in daily energy consumption post-event.
+Recommendation,recommendation_id,string,YES,PRIMARY_KEY,dimensionless,Regex ^REC-[0-9]{4}-[0-9]{6}$,Pattern REC-<year>-<seq>; immutable.
+Recommendation,plant_id,string,YES,FOREIGN_KEY,dimensionless,Existing Plant.plant_id,Must reference valid Plant.
+Recommendation,machine_id,string,NO,FOREIGN_KEY,dimensionless,Null or existing Machine.machine_id,Optional asset reference for machine-specific recommendations.
+Recommendation,category,string,YES,NON_UNIQUE,enum,"['PEAK_SHAVING', 'IDLE_REDUCTION', 'LOAD_SHIFTING', 'MAINTENANCE_TUNING']",Energy efficiency category.
+Recommendation,title,string,YES,NON_UNIQUE,dimensionless,Concise headline (e.g. De-energize Injection Mold 02 during shift break),Action-oriented title.
+Recommendation,description,string,YES,NON_UNIQUE,dimensionless,Detailed rationale with evidence from telemetry and shift calendar,Preserves traceability to root cause readings.
+Recommendation,action_actor,string,YES,NON_UNIQUE,enum,"['PLANT_OPERATOR', 'MAINTENANCE_ENGINEER', 'PRODUCTION_PLANNER', 'OT_IT_ADMIN']",Designated role responsible for implementing action.
+Recommendation,baseline_kwh,float,YES,NON_UNIQUE,kWh,>= 0.0,Empirical historical energy baseline being measured.
+Recommendation,estimated_kwh_savings,float,YES,NON_UNIQUE,kWh,> 0.0 and <= baseline_kwh,Projected energy reduction; must be <= baseline_kwh.
+Recommendation,estimated_cost_savings,float,YES,NON_UNIQUE,currency ($),>= 0.0,Financial benefit evaluated against specific TOU tariff rates.
+Recommendation,payback_period_days,float,YES,NON_UNIQUE,days,>= 0.0,"0.0 for zero-cost behavioral controls, or capital payback."
+Recommendation,status,string,YES,NON_UNIQUE,enum,"['OPEN', 'ACKNOWLEDGED', 'IMPLEMENTED', 'REJECTED']",Workflow lifecycle state.
+Recommendation,generated_at,string,YES,NON_UNIQUE,timestamp,ISO 8601 timestamp,Timestamp of analytics engine run.

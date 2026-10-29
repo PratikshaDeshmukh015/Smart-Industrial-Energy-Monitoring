@@ -1,0 +1,16 @@
+{
+    "python.defaultInterpreterPath": "C:\\Users\\pratiksha\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./tests",
+        "-p",
+        "test_*.py"
+    ],
+    "python.testing.unittestEnabled": true,
+    "python.testing.pytestEnabled": false,
+    "files.associations": {
+        "*.sql": "sql",
+        "*.csv": "csv"
+    }
+}

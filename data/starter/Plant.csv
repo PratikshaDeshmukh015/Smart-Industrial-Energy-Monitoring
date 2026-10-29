@@ -1,0 +1,2 @@
+plant_id,name,location,timezone,contracted_peak_kw,voltage_kv,created_at
+PLT-001,Apex Precision Manufacturing - Plant 1,"Chicago, IL",America/Chicago,1250.0,13.8,2026-06-01T00:00:00
